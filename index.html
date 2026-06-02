@@ -1785,14 +1785,17 @@ async function fetchServerAggregate() {
 
 async function submitToBackend(payload) {
   try {
-    const res = await fetch(BACKEND_URL, {
+    // no-cors umgeht CORS-Blockierung bei Apps Script.
+    // Wir bekommen keine Antwort zurück, aber der POST kommt an.
+    await fetch(BACKEND_URL, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'text/plain' },
       body: JSON.stringify(payload)
     });
-    if (!res.ok) console.warn('Backend status:', res.status);
+    console.log('Submitted (no-cors)');
   } catch(e) {
-    console.warn('Backend nicht erreichbar (kein Fehler für User):', e.message);
+    console.warn('Backend nicht erreichbar:', e.message);
   }
 }
 
