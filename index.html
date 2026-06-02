@@ -1,0 +1,2073 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TU WIEN · STUDIE AI Legacy 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@300;400;500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0f1a;
+    --surface: #111827;
+    --surface2: #1a2236;
+    --border: #1e2d45;
+    --accent: #4f9cf9;
+    --accent2: #7c3aed;
+    --accent3: #10b981;
+    --warn: #f59e0b;
+    --text: #e2e8f0;
+    --muted: #64748b;
+    --radius: 12px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+
+  /* Background grid */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(79,156,249,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(79,156,249,0.03) 1px, transparent 1px);
+    background-size: 48px 48px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .container {
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 40px 24px 80px;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* Header */
+  .header {
+    margin-bottom: 48px;
+    text-align: center;
+  }
+
+  .header-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(79,156,249,0.1);
+    border: 1px solid rgba(79,156,249,0.25);
+    color: var(--accent);
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 6px 14px;
+    border-radius: 100px;
+    margin-bottom: 20px;
+  }
+
+  .header-badge::before {
+    content: '';
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(1.4); }
+  }
+
+  h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(28px, 5vw, 42px);
+    font-weight: 400;
+    line-height: 1.15;
+    margin-bottom: 16px;
+    color: #fff;
+  }
+
+  h1 em {
+    font-style: italic;
+    color: var(--accent);
+  }
+
+  .header-sub {
+    color: var(--muted);
+    font-size: 14px;
+    max-width: 500px;
+    margin: 0 auto;
+  }
+
+  /* Progress */
+  .progress-wrap {
+    margin-bottom: 36px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .progress-bar-bg {
+    flex: 1;
+    height: 4px;
+    background: var(--border);
+    border-radius: 100px;
+    overflow: hidden;
+  }
+
+  .progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    border-radius: 100px;
+    transition: width 0.5s cubic-bezier(0.4,0,0.2,1);
+    width: 0%;
+  }
+
+  .progress-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    white-space: nowrap;
+  }
+
+  /* Section blocks */
+  .section {
+    display: none;
+    animation: fadeUp 0.4s ease;
+  }
+
+  .section.active { display: block; }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 28px;
+  }
+
+  .section-number {
+    width: 36px; height: 36px;
+    border-radius: 8px;
+    background: rgba(79,156,249,0.12);
+    border: 1px solid rgba(79,156,249,0.25);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    color: var(--accent);
+    flex-shrink: 0;
+  }
+
+  .section-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 20px;
+    font-weight: 400;
+    color: #fff;
+  }
+
+  .section-desc {
+    color: var(--muted);
+    font-size: 13px;
+    margin-top: 2px;
+  }
+
+  /* Card */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px 22px;
+    margin-bottom: 14px;
+  }
+
+  .q-label {
+    font-size: 14px;
+    color: var(--text);
+    margin-bottom: 14px;
+    line-height: 1.5;
+  }
+
+  .q-number {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 6px;
+  }
+
+  /* Radio / Checkbox */
+  .radio-group, .check-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .radio-opt, .check-opt {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    cursor: pointer;
+    transition: all 0.15s;
+    font-size: 14px;
+    color: var(--text);
+    background: transparent;
+    user-select: none;
+  }
+
+  .radio-opt:hover, .check-opt:hover {
+    border-color: rgba(79,156,249,0.4);
+    background: rgba(79,156,249,0.05);
+  }
+
+  .radio-opt.selected, .check-opt.selected {
+    border-color: var(--accent);
+    background: rgba(79,156,249,0.1);
+    color: #fff;
+  }
+
+  .radio-dot {
+    width: 16px; height: 16px;
+    border-radius: 50%;
+    border: 2px solid var(--muted);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    transition: all 0.15s;
+  }
+
+  .radio-opt.selected .radio-dot {
+    border-color: var(--accent);
+    background: var(--accent);
+  }
+
+  .radio-dot::after {
+    content: '';
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: #fff;
+    opacity: 0;
+    transition: opacity 0.15s;
+  }
+
+  .radio-opt.selected .radio-dot::after { opacity: 1; }
+
+  .check-box {
+    width: 16px; height: 16px;
+    border-radius: 4px;
+    border: 2px solid var(--muted);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    transition: all 0.15s;
+    font-size: 10px;
+  }
+
+  .check-opt.selected .check-box {
+    border-color: var(--accent);
+    background: var(--accent);
+    color: #fff;
+  }
+
+  /* Likert / Slider */
+  .likert-wrap {
+    margin-top: 8px;
+  }
+
+  .likert-labels {
+    display: flex;
+    justify-content: space-between;
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    margin-bottom: 10px;
+  }
+
+  .likert-scale {
+    display: flex;
+    gap: 4px;
+    justify-content: space-between;
+  }
+
+  .likert-btn {
+    flex: 1;
+    height: 36px;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--muted);
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    cursor: pointer;
+    transition: all 0.12s;
+  }
+
+  .likert-btn:hover {
+    border-color: rgba(79,156,249,0.4);
+    background: rgba(79,156,249,0.05);
+    color: var(--accent);
+  }
+
+  .likert-btn.selected {
+    border-color: var(--accent);
+    background: var(--accent);
+    color: #fff;
+  }
+
+  /* MAILS 0–10 slider */
+  .mails-slider-wrap {
+    margin-top: 10px;
+  }
+
+  .mails-slider-labels {
+    display: flex;
+    justify-content: space-between;
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    margin-bottom: 8px;
+  }
+
+  .mails-scale {
+    display: flex;
+    gap: 3px;
+  }
+
+  .mails-btn {
+    flex: 1;
+    height: 32px;
+    border-radius: 4px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--muted);
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    cursor: pointer;
+    transition: all 0.12s;
+    padding: 0;
+  }
+
+  .mails-btn:hover {
+    border-color: rgba(124,58,237,0.5);
+    background: rgba(124,58,237,0.08);
+    color: #a78bfa;
+  }
+
+  .mails-btn.selected {
+    border-color: var(--accent2);
+    background: var(--accent2);
+    color: #fff;
+  }
+
+  /* Info box */
+  .info-box {
+    background: rgba(79,156,249,0.06);
+    border: 1px solid rgba(79,156,249,0.2);
+    border-radius: 8px;
+    padding: 14px 16px;
+    font-size: 13px;
+    color: #94a3b8;
+    margin-bottom: 20px;
+    display: flex;
+    gap: 10px;
+  }
+
+  .info-box-icon { font-size: 16px; flex-shrink: 0; }
+
+  /* Nav buttons */
+  .nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 28px;
+    gap: 12px;
+  }
+
+  .btn {
+    padding: 12px 28px;
+    border-radius: 8px;
+    border: none;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s;
+    letter-spacing: 0.01em;
+  }
+
+  .btn-primary {
+    background: var(--accent);
+    color: #fff;
+  }
+
+  .btn-primary:hover { background: #3b82f6; transform: translateY(-1px); }
+
+  .btn-ghost {
+    background: transparent;
+    color: var(--muted);
+    border: 1px solid var(--border);
+  }
+
+  .btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
+
+  .btn-success {
+    background: var(--accent3);
+    color: #fff;
+  }
+
+  .btn-success:hover { background: #059669; }
+
+  /* Results */
+  #results { display: none; }
+
+  .results-hero {
+    text-align: center;
+    padding: 40px 0 32px;
+  }
+
+  .results-hero h2 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 28px;
+    color: #fff;
+    margin-bottom: 8px;
+  }
+
+  .results-hero p {
+    color: var(--muted);
+    font-size: 14px;
+  }
+
+  .score-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    margin-bottom: 28px;
+  }
+
+  @media (max-width: 480px) { .score-grid { grid-template-columns: 1fr; } }
+
+  .score-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 18px 20px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .score-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: var(--card-accent, var(--accent));
+  }
+
+  .score-card-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+    font-family: 'DM Mono', monospace;
+    margin-bottom: 8px;
+  }
+
+  .score-card-value {
+    font-family: 'DM Mono', monospace;
+    font-size: 32px;
+    font-weight: 500;
+    color: #fff;
+    line-height: 1;
+    margin-bottom: 6px;
+  }
+
+  .score-card-sub {
+    font-size: 12px;
+    color: var(--muted);
+  }
+
+  .benchmark-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 8px;
+    gap: 8px;
+  }
+
+  .bench-label {
+    font-size: 11px;
+    color: var(--muted);
+    font-family: 'DM Mono', monospace;
+    flex-shrink: 0;
+  }
+
+  .bench-bar-bg {
+    flex: 1;
+    height: 6px;
+    background: var(--border);
+    border-radius: 100px;
+    overflow: hidden;
+  }
+
+  .bench-bar-fill {
+    height: 100%;
+    border-radius: 100px;
+    transition: width 1s cubic-bezier(0.4,0,0.2,1) 0.5s;
+  }
+
+  .bench-val {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--text);
+    flex-shrink: 0;
+    width: 28px;
+    text-align: right;
+  }
+
+  .dimension-block {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 18px 20px;
+    margin-bottom: 14px;
+  }
+
+  .dim-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+  }
+
+  .dim-name {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text);
+  }
+
+  .dim-score {
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    color: var(--accent);
+  }
+
+  .dim-bar-bg {
+    height: 8px;
+    background: var(--border);
+    border-radius: 100px;
+    overflow: hidden;
+    margin-bottom: 8px;
+  }
+
+  .dim-bar-fill {
+    height: 100%;
+    border-radius: 100px;
+    transition: width 1s cubic-bezier(0.4,0,0.2,1) 0.6s;
+  }
+
+  .dim-feedback {
+    font-size: 12px;
+    color: var(--muted);
+  }
+
+  .profile-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 18px;
+    border-radius: 100px;
+    font-size: 14px;
+    font-weight: 500;
+    margin: 16px 0 8px;
+  }
+
+  .adoption-comparison {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+    margin-bottom: 14px;
+  }
+
+  .adoption-comparison h4 {
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--muted);
+    font-family: 'DM Mono', monospace;
+    margin-bottom: 16px;
+  }
+
+  .comp-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+    font-size: 13px;
+  }
+
+  .comp-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .comp-name { flex: 1; color: var(--text); }
+  .comp-pct { font-family: 'DM Mono', monospace; font-size: 12px; color: var(--muted); width: 36px; text-align: right; }
+
+  .comp-bar-bg {
+    flex: 2;
+    height: 6px;
+    background: var(--border);
+    border-radius: 100px;
+    overflow: hidden;
+  }
+
+  .comp-bar-fill {
+    height: 100%;
+    border-radius: 100px;
+    transition: width 1s ease 0.8s;
+  }
+
+  .disclaimer {
+    font-size: 11px;
+    color: var(--muted);
+    text-align: center;
+    margin-top: 32px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
+    font-family: 'DM Mono', monospace;
+    line-height: 1.7;
+  }
+
+  .tag-chip {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 100px;
+    font-size: 11px;
+    font-family: 'DM Mono', monospace;
+    background: rgba(79,156,249,0.1);
+    border: 1px solid rgba(79,156,249,0.2);
+    color: var(--accent);
+    margin: 2px;
+  }
+
+  /* ── Consent Screen ── */
+  #consentScreen {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 40px 0 60px;
+  }
+
+  .consent-logo {
+    text-align: center;
+    margin-bottom: 36px;
+  }
+
+  .consent-logo-badge {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 12px;
+  }
+
+  .consent-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(22px, 5vw, 36px);
+    color: #fff;
+    line-height: 1.15;
+    margin-bottom: 4px;
+  }
+
+  .consent-subtitle {
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    color: var(--accent);
+    letter-spacing: 0.08em;
+  }
+
+  .consent-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    overflow: hidden;
+    margin-bottom: 16px;
+  }
+
+  .consent-card-header {
+    background: rgba(79,156,249,0.07);
+    border-bottom: 1px solid var(--border);
+    padding: 14px 20px;
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .consent-body {
+    padding: 20px 22px;
+    font-size: 13px;
+    color: #94a3b8;
+    line-height: 1.75;
+  }
+
+  .consent-body strong { color: var(--text); }
+
+  .consent-body ul {
+    list-style: none;
+    padding: 0;
+    margin: 10px 0;
+  }
+
+  .consent-body ul li {
+    padding: 4px 0 4px 20px;
+    position: relative;
+  }
+
+  .consent-body ul li::before {
+    content: '→';
+    position: absolute;
+    left: 0;
+    color: var(--accent);
+    font-family: 'DM Mono', monospace;
+  }
+
+  .consent-check-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 16px 22px;
+    border-top: 1px solid var(--border);
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+
+  .consent-check-row:hover { background: rgba(79,156,249,0.04); }
+
+  .consent-checkbox {
+    width: 20px; height: 20px;
+    border-radius: 5px;
+    border: 2px solid var(--muted);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    margin-top: 1px;
+    transition: all 0.15s;
+    font-size: 12px;
+    color: #fff;
+  }
+
+  .consent-checkbox.checked {
+    background: var(--accent);
+    border-color: var(--accent);
+  }
+
+  .consent-check-label {
+    font-size: 13px;
+    color: var(--text);
+    line-height: 1.5;
+  }
+
+  .consent-check-label span {
+    color: var(--muted);
+    font-size: 12px;
+    display: block;
+    margin-top: 2px;
+  }
+
+  .btn-consent {
+    width: 100%;
+    padding: 16px;
+    border-radius: 10px;
+    border: none;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    background: var(--accent);
+    color: #fff;
+    letter-spacing: 0.01em;
+    opacity: 0.4;
+    pointer-events: none;
+  }
+
+  .btn-consent.active {
+    opacity: 1;
+    pointer-events: all;
+  }
+
+  .btn-consent.active:hover { background: #3b82f6; transform: translateY(-2px); box-shadow: 0 8px 24px rgba(79,156,249,0.25); }
+
+  .consent-meta {
+    text-align: center;
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    margin-top: 14px;
+    line-height: 1.8;
+  }
+
+  /* ── Select input ── */
+  .select-input {
+    width: 100%;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    padding: 10px 14px;
+    cursor: pointer;
+    outline: none;
+    transition: border-color 0.15s;
+    appearance: none;
+    -webkit-appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%2364748b' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+    padding-right: 36px;
+  }
+
+  .select-input:focus { border-color: var(--accent); }
+  .select-input option { background: #1a2236; }
+
+  #surveyWrap { display: none; }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- ═══════════════════════════════════ -->
+  <!-- CONSENT SCREEN                     -->
+  <!-- ═══════════════════════════════════ -->
+  <div id="consentScreen">
+
+    <div class="consent-logo">
+      <div class="consent-logo-badge">Technische Universität Wien</div>
+      <div class="consent-title">TU WIEN · STUDIE<br><em style="font-style:italic; color:var(--accent)">AI Legacy</em></div>
+      <div class="consent-subtitle">— 2026 —</div>
+    </div>
+
+    <div class="consent-card">
+      <div class="consent-card-header">
+        <span>📋</span> Studieninformation & Datenschutz
+      </div>
+      <div class="consent-body">
+        <strong>Zweck der Studie</strong><br>
+        Diese Studie untersucht, wie Studierende der TU Wien KI-Tools in ihrem Studium adoptiert haben. Die Ergebnisse fließen in die Forschung zu AI Literacy an österreichischen Hochschulen ein.<br><br>
+        <strong>Was wird erhoben?</strong>
+        <ul>
+          <li>Demografische Angaben (Alter, Geschlecht, Studienbereich, Studienabschnitt)</li>
+          <li>Nutzungsverhalten gegenüber KI-Tools im Studienkontext</li>
+          <li>Einstellungen und Bedenken zur KI-Nutzung</li>
+          <li>AI-Literacy-Selbsteinschätzung (MAILS-Kurzskala, validiertes Instrument)</li>
+        </ul>
+        <strong>Datenschutz & DSGVO</strong><br>
+        Alle Daten werden <strong>vollständig anonym</strong> erhoben und verarbeitet. Es werden keine personenbezogenen Daten (Name, E-Mail, Matrikelnummer) gespeichert. Die Daten werden ausschließlich für wissenschaftliche Zwecke verwendet und nicht an Dritte weitergegeben. Die Datenverarbeitung erfolgt gemäß <strong>Art. 6 Abs. 1 lit. a DSGVO</strong> (Einwilligung) sowie <strong>Art. 89 DSGVO</strong> (Verarbeitung zu Forschungszwecken).<br><br>
+        <strong>Teilnahme</strong><br>
+        Die Teilnahme ist freiwillig. Du kannst die Umfrage jederzeit abbrechen. Die Bearbeitung dauert ca. <strong>8–12 Minuten</strong>. Als Gegenleistung erhältst du sofort dein persönliches AI-Literacy-Profil.
+      </div>
+
+      <!-- Consent checkbox 1 -->
+      <div class="consent-check-row" onclick="toggleConsent('c1')">
+        <div class="consent-checkbox" id="c1-box"></div>
+        <div class="consent-check-label">
+          Ich habe die Studieninformation gelesen und stimme der anonymen Verarbeitung meiner Antworten zu wissenschaftlichen Zwecken gemäß DSGVO zu.
+          <span>Pflichtfeld</span>
+        </div>
+      </div>
+
+      <!-- Consent checkbox 2 -->
+      <div class="consent-check-row" onclick="toggleConsent('c2')">
+        <div class="consent-checkbox" id="c2-box"></div>
+        <div class="consent-check-label">
+          Ich bestätige, dass ich mindestens 18 Jahre alt bin und freiwillig an dieser Studie teilnehme.
+          <span>Pflichtfeld</span>
+        </div>
+      </div>
+
+      <!-- Consent checkbox 3 (optional) -->
+      <div class="consent-check-row" onclick="toggleConsent('c3')">
+        <div class="consent-checkbox" id="c3-box"></div>
+        <div class="consent-check-label">
+          Ich bin einverstanden, dass die anonymisierten Ergebnisse in wissenschaftlichen Publikationen verwendet werden dürfen.
+          <span>Optional – keine Auswirkung auf die Teilnahme</span>
+        </div>
+      </div>
+    </div>
+
+    <button class="btn-consent" id="startBtn" onclick="startSurvey()">
+      Studie starten → Profil erhalten
+    </button>
+
+    <div class="consent-meta">
+      Verantwortlich: Institut für Immobilien, Bauen und Wohnen (IPRE) · TU Wien<br>
+      Datenverarbeitung: Anonym, kein Personenbezug · DSGVO-konform<br>
+      Kontakt bei Fragen: <span style="color:var(--accent)"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="fc9d95d190999b9d9f85d18f88899885bc88898b959992d29d9fd29d88">[email&#160;protected]</a></span>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════ -->
+  <!-- SURVEY WRAP                        -->
+  <!-- ═══════════════════════════════════ -->
+  <div id="surveyWrap">
+
+  <!-- Header -->
+  <div class="header">
+    <div class="header-badge">TU Wien · AI Legacy Studie 2026</div>
+    <h1>TU WIEN · STUDIE<br><em>AI Legacy</em> — 2026</h1>
+    <p class="header-sub">
+      Beantworte 27 kurze Fragen und erhalte sofort dein persönliches AI-Literacy-Profil –
+      benchmarkt gegen globale Studierende.
+    </p>
+  </div>
+
+  <!-- Progress -->
+  <div class="progress-wrap">
+    <div class="progress-bar-bg">
+      <div class="progress-bar-fill" id="progressBar"></div>
+    </div>
+    <span class="progress-label" id="progressLabel">0 / 5</span>
+  </div>
+
+  <!-- ═══════════════════════════════════ -->
+  <!-- SECTION 1: Demografie             -->
+  <!-- ═══════════════════════════════════ -->
+  <div class="section active" id="sec1">
+    <div class="section-header">
+      <div class="section-number">01</div>
+      <div>
+        <div class="section-title">Über dich</div>
+        <div class="section-desc">Kurze demografische Angaben für die Auswertung</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="q-number">Frage 1</div>
+      <div class="q-label">Wie alt bist du?</div>
+      <select class="select-input" id="q_age" onchange="answers['q_age']=this.value">
+        <option value="" disabled selected>Alter auswählen …</option>
+        <option value="17">Unter 18</option>
+        <option value="18">18</option>
+        <option value="19">19</option>
+        <option value="20">20</option>
+        <option value="21">21</option>
+        <option value="22">22</option>
+        <option value="23">23</option>
+        <option value="24">24</option>
+        <option value="25">25</option>
+        <option value="26">26</option>
+        <option value="27">27</option>
+        <option value="28">28</option>
+        <option value="29">29</option>
+        <option value="30">30</option>
+        <option value="31-35">31–35</option>
+        <option value="36-40">36–40</option>
+        <option value="41+">Über 40</option>
+      </select>
+    </div>
+
+    <div class="card">
+      <div class="q-number">Frage 2</div>
+      <div class="q-label">Welchem Geschlecht identifizierst du dich?</div>
+      <div class="radio-group" id="q_gender">
+        <div class="radio-opt" data-val="female"><div class="radio-dot"></div> Weiblich</div>
+        <div class="radio-opt" data-val="male"><div class="radio-dot"></div> Männlich</div>
+        <div class="radio-opt" data-val="nonbinary"><div class="radio-dot"></div> Nicht-binär / Divers</div>
+        <div class="radio-opt" data-val="nostate"><div class="radio-dot"></div> Keine Angabe</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="q-number">Frage 3</div>
+      <div class="q-label">Welchem Studienbereich gehörst du an?</div>
+      <div class="radio-group" id="q1">
+        <div class="radio-opt" data-val="arch">
+          <div class="radio-dot"></div> Architektur & Raumplanung
+        </div>
+        <div class="radio-opt" data-val="civil">
+          <div class="radio-dot"></div> Bau- & Umweltingenieurwesen
+        </div>
+        <div class="radio-opt" data-val="mech">
+          <div class="radio-dot"></div> Maschinenbau & Verfahrenstechnik
+        </div>
+        <div class="radio-opt" data-val="cs">
+          <div class="radio-dot"></div> Informatik & Elektrotechnik
+        </div>
+        <div class="radio-opt" data-val="math">
+          <div class="radio-dot"></div> Mathematik, Physik & Naturwiss.
+        </div>
+        <div class="radio-opt" data-val="other">
+          <div class="radio-dot"></div> Anderes / Interdisziplinär
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="q-number">Frage 4</div>
+      <div class="q-label">In welchem Studienabschnitt befindest du dich?</div>
+      <div class="radio-group" id="q2">
+        <div class="radio-opt" data-val="bac"><div class="radio-dot"></div> Bachelor (1.–3. Jahr)</div>
+        <div class="radio-opt" data-val="mas"><div class="radio-dot"></div> Master</div>
+        <div class="radio-opt" data-val="phd"><div class="radio-dot"></div> Doktorat / PhD</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="q-number">Frage 5</div>
+      <div class="q-label">Wie schätzt du dein generelles technisches Selbstvertrauen ein?</div>
+      <div class="radio-group" id="q3">
+        <div class="radio-opt" data-val="1"><div class="radio-dot"></div> Niedrig – ich meide technische Komplexität</div>
+        <div class="radio-opt" data-val="2"><div class="radio-dot"></div> Mittel – ich nutze Tools, wenn ich muss</div>
+        <div class="radio-opt" data-val="3"><div class="radio-dot"></div> Hoch – ich experimentiere gerne mit neuen Tools</div>
+        <div class="radio-opt" data-val="4"><div class="radio-dot"></div> Sehr hoch – ich entwickle selbst</div>
+      </div>
+    </div>
+
+    <div class="nav">
+      <div></div>
+      <button class="btn btn-primary" onclick="nextSection(2)">Weiter →</button>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════ -->
+  <!-- SECTION 2: Adoptionsverhalten     -->
+  <!-- ═══════════════════════════════════ -->
+  <div class="section" id="sec2">
+    <div class="section-header">
+      <div class="section-number">02</div>
+      <div>
+        <div class="section-title">AI-Adoptionsverhalten</div>
+        <div class="section-desc">Wie du AI in deinem Studieralltag einsetzt</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="q-number">Frage 4</div>
+      <div class="q-label">Wie häufig nutzt du KI-Tools (ChatGPT, Claude, Copilot etc.) im Studienkontext?</div>
+      <div class="radio-group" id="q4">
+        <div class="radio-opt" data-val="never"><div class="radio-dot"></div> Nie</div>
+        <div class="radio-opt" data-val="rarely"><div class="radio-dot"></div> Selten (weniger als 1x/Woche)</div>
+        <div class="radio-opt" data-val="weekly"><div class="radio-dot"></div> Regelmäßig (1–3x/Woche)</div>
+        <div class="radio-opt" data-val="daily"><div class="radio-dot"></div> Täglich</div>
+        <div class="radio-opt" data-val="vdaily"><div class="radio-dot"></div> Mehrmals täglich</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="q-number">Frage 5</div>
+      <div class="q-label">Welche KI-Tools nutzt du regelmäßig? (Mehrfachauswahl)</div>
+      <div class="check-group" id="q5">
+        <div class="check-opt" data-val="chatgpt"><div class="check-box">✓</div> ChatGPT (OpenAI)</div>
+        <div class="check-opt" data-val="claude"><div class="check-box">✓</div> Claude (Anthropic)</div>
+        <div class="check-opt" data-val="copilot"><div class="check-box">✓</div> Microsoft Copilot / Bing</div>
+        <div class="check-opt" data-val="gemini"><div class="check-box">✓</div> Google Gemini</div>
+        <div class="check-opt" data-val="perplexity"><div class="check-box">✓</div> Perplexity / andere Suchassistenten</div>
+        <div class="check-opt" data-val="midjourney"><div class="check-box">✓</div> Bildgenerierung (Midjourney, DALL-E etc.)</div>
+        <div class="check-opt" data-val="code"><div class="check-box">✓</div> Code-Assistenten (GitHub Copilot, Cursor etc.)</div>
+        <div class="check-opt" data-val="none"><div class="check-box">✓</div> Keine</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="q-number">Frage 6</div>
+      <div class="q-label">Wofür setzt du KI hauptsächlich ein? (Mehrfachauswahl)</div>
+      <div class="check-group" id="q6">
+        <div class="check-opt" data-val="write"><div class="check-box">✓</div> Texte schreiben / überarbeiten</div>
+        <div class="check-opt" data-val="research"><div class="check-box">✓</div> Recherche & Zusammenfassungen</div>
+        <div class="check-opt" data-val="code2"><div class="check-box">✓</div> Code schreiben / debuggen</div>
+        <div class="check-opt" data-val="explain"><div class="check-box">✓</div> Konzepte erklären lassen</div>
+        <div class="check-opt" data-val="exam"><div class="check-box">✓</div> Prüfungsvorbereitung</div>
+        <div class="check-opt" data-val="ideas"><div class="check-box">✓</div> Brainstorming & Ideenentwicklung</div>
+        <div class="check-opt" data-val="translate"><div class="check-box">✓</div> Übersetzung</div>
+        <div class="check-opt" data-val="visual"><div class="check-box">✓</div> Visualisierungen / Design</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="q-number">Frage 7</div>
+      <div class="q-label">Hast du dich aktiv über die Richtlinien deiner Lehrveranstaltungen zur KI-Nutzung informiert?</div>
+      <div class="radio-group" id="q7">
+        <div class="radio-opt" data-val="yes_clear"><div class="radio-dot"></div> Ja, und die Regeln sind mir klar</div>
+        <div class="radio-opt" data-val="yes_unclear"><div class="radio-dot"></div> Ja, aber die Regeln sind unklar</div>
+        <div class="radio-opt" data-val="no"><div class="radio-dot"></div> Nein, ich habe nicht aktiv nachgesehen</div>
+        <div class="radio-opt" data-val="none"><div class="radio-dot"></div> Es gibt keine spezifischen Regeln in meinen LVs</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="q-number">Frage 8</div>
+      <div class="q-label">Wie verändert KI-Nutzung deine Arbeitsweise im Studium?</div>
+      <div class="radio-group" id="q8">
+        <div class="radio-opt" data-val="augment"><div class="radio-dot"></div> Ich lerne mehr, weil KI mir erklärt</div>
+        <div class="radio-opt" data-val="faster"><div class="radio-dot"></div> Ich arbeite schneller, aber ähnlich</div>
+        <div class="radio-opt" data-val="replace"><div class="radio-dot"></div> Ich delegiere Aufgaben an KI, die ich sonst selbst machte</div>
+        <div class="radio-opt" data-val="mixed"><div class="radio-dot"></div> Gemischt – kommt auf die Aufgabe an</div>
+        <div class="radio-opt" data-val="no_change"><div class="radio-dot"></div> Meine Arbeitsweise hat sich kaum verändert</div>
+      </div>
+    </div>
+
+    <div class="nav">
+      <button class="btn btn-ghost" onclick="prevSection(1)">← Zurück</button>
+      <button class="btn btn-primary" onclick="nextSection(3)">Weiter →</button>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════ -->
+  <!-- SECTION 3: Einstellungen           -->
+  <!-- ═══════════════════════════════════ -->
+  <div class="section" id="sec3">
+    <div class="section-header">
+      <div class="section-number">03</div>
+      <div>
+        <div class="section-title">Einstellungen & Bedenken</div>
+        <div class="section-desc">Deine Haltung gegenüber KI im Studium</div>
+      </div>
+    </div>
+
+    <div class="info-box">
+      <span class="info-box-icon">ℹ️</span>
+      <span>Bitte bewerte auf einer Skala von <strong>1 (stimme gar nicht zu)</strong> bis <strong>5 (stimme voll zu)</strong>.</span>
+    </div>
+
+    <div class="card">
+      <div class="q-number">Frage 9</div>
+      <div class="q-label">KI-Tools helfen mir, bessere Ergebnisse zu erzielen.</div>
+      <div class="likert-wrap">
+        <div class="likert-labels"><span>Stimme nicht zu</span><span>Stimme voll zu</span></div>
+        <div class="likert-scale" id="q9">
+          <button class="likert-btn" data-val="1">1</button>
+          <button class="likert-btn" data-val="2">2</button>
+          <button class="likert-btn" data-val="3">3</button>
+          <button class="likert-btn" data-val="4">4</button>
+          <button class="likert-btn" data-val="5">5</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="q-number">Frage 10</div>
+      <div class="q-label">Ich mache mir Sorgen, dass ich durch KI wichtige Fähigkeiten nicht entwickle.</div>
+      <div class="likert-wrap">
+        <div class="likert-labels"><span>Stimme nicht zu</span><span>Stimme voll zu</span></div>
+        <div class="likert-scale" id="q10">
+          <button class="likert-btn" data-val="1">1</button>
+          <button class="likert-btn" data-val="2">2</button>
+          <button class="likert-btn" data-val="3">3</button>
+          <button class="likert-btn" data-val="4">4</button>
+          <button class="likert-btn" data-val="5">5</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="q-number">Frage 11</div>
+      <div class="q-label">Ich hinterfrage kritisch, ob KI-Outputs korrekt und verlässlich sind.</div>
+      <div class="likert-wrap">
+        <div class="likert-labels"><span>Stimme nicht zu</span><span>Stimme voll zu</span></div>
+        <div class="likert-scale" id="q11">
+          <button class="likert-btn" data-val="1">1</button>
+          <button class="likert-btn" data-val="2">2</button>
+          <button class="likert-btn" data-val="3">3</button>
+          <button class="likert-btn" data-val="4">4</button>
+          <button class="likert-btn" data-val="5">5</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="q-number">Frage 12</div>
+      <div class="q-label">Die TU Wien sollte konkrete Kurse und Trainings zur ethischen KI-Nutzung anbieten.</div>
+      <div class="likert-wrap">
+        <div class="likert-labels"><span>Stimme nicht zu</span><span>Stimme voll zu</span></div>
+        <div class="likert-scale" id="q12">
+          <button class="likert-btn" data-val="1">1</button>
+          <button class="likert-btn" data-val="2">2</button>
+          <button class="likert-btn" data-val="3">3</button>
+          <button class="likert-btn" data-val="4">4</button>
+          <button class="likert-btn" data-val="5">5</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="q-number">Frage 13</div>
+      <div class="q-label">Meine Lehrenden sind gut aufgestellt, um mich bei der KI-Nutzung zu beraten.</div>
+      <div class="likert-wrap">
+        <div class="likert-labels"><span>Stimme nicht zu</span><span>Stimme voll zu</span></div>
+        <div class="likert-scale" id="q13">
+          <button class="likert-btn" data-val="1">1</button>
+          <button class="likert-btn" data-val="2">2</button>
+          <button class="likert-btn" data-val="3">3</button>
+          <button class="likert-btn" data-val="4">4</button>
+          <button class="likert-btn" data-val="5">5</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="nav">
+      <button class="btn btn-ghost" onclick="prevSection(2)">← Zurück</button>
+      <button class="btn btn-primary" onclick="nextSection(4)">Weiter →</button>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════ -->
+  <!-- SECTION 4: MAILS Short Scale      -->
+  <!-- ═══════════════════════════════════ -->
+  <div class="section" id="sec4">
+    <div class="section-header">
+      <div class="section-number">04</div>
+      <div>
+        <div class="section-title">AI Literacy Selbsteinschätzung</div>
+        <div class="section-desc">Validierte MAILS-Kurzskala (Koch, Carolus et al., 2024)</div>
+      </div>
+    </div>
+
+    <div class="info-box">
+      <span class="info-box-icon">🧪</span>
+      <span>Diese 10 Items stammen aus einem wissenschaftlich validierten Messinstrument der Universität Würzburg. <strong>0 = Fähigkeit kaum ausgeprägt · 10 = Fähigkeit sehr stark ausgeprägt.</strong></span>
+    </div>
+
+    <!-- MAILS Items -->
+    <div id="mailsItems"></div>
+
+    <div class="nav">
+      <button class="btn btn-ghost" onclick="prevSection(3)">← Zurück</button>
+      <button class="btn btn-primary" onclick="nextSection(5)">Weiter →</button>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════ -->
+  <!-- SECTION 5: Abschluss              -->
+  <!-- ═══════════════════════════════════ -->
+  <div class="section" id="sec5">
+    <div class="section-header">
+      <div class="section-number">05</div>
+      <div>
+        <div class="section-title">Letzte Fragen</div>
+        <div class="section-desc">Fast geschafft!</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="q-number">Frage 24</div>
+      <div class="q-label">Wo hast du hauptsächlich Wissen über KI erworben?</div>
+      <div class="check-group" id="q24">
+        <div class="check-opt" data-val="self"><div class="check-box">✓</div> Selbststudium (YouTube, Blogs, Ausprobieren)</div>
+        <div class="check-opt" data-val="lv"><div class="check-box">✓</div> Lehrveranstaltungen an der TU</div>
+        <div class="check-opt" data-val="peers"><div class="check-box">✓</div> Kommilitonen / Peers</div>
+        <div class="check-opt" data-val="work"><div class="check-box">✓</div> Arbeit / Praktikum</div>
+        <div class="check-opt" data-val="course"><div class="check-box">✓</div> Online-Kurs (Coursera, edX etc.)</div>
+        <div class="check-opt" data-val="nowhere"><div class="check-box">✓</div> Kaum – ich bin AI-Neuling</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="q-number">Frage 25</div>
+      <div class="q-label">Würdest du ein strukturiertes AI-Literacy-Training an der TU Wien besuchen, wenn es angeboten würde?</div>
+      <div class="radio-group" id="q25">
+        <div class="radio-opt" data-val="yes_def"><div class="radio-dot"></div> Ja, definitiv</div>
+        <div class="radio-opt" data-val="yes_maybe"><div class="radio-dot"></div> Wahrscheinlich ja</div>
+        <div class="radio-opt" data-val="maybe"><div class="radio-dot"></div> Vielleicht</div>
+        <div class="radio-opt" data-val="no"><div class="radio-dot"></div> Eher nicht</div>
+      </div>
+    </div>
+
+    <div class="nav">
+      <button class="btn btn-ghost" onclick="prevSection(4)">← Zurück</button>
+      <button class="btn btn-success" onclick="showResults()">Mein Ergebnis anzeigen ✦</button>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════ -->
+  <!-- RESULTS                            -->
+  <!-- ═══════════════════════════════════ -->
+  <div id="results">
+    <div class="results-hero">
+      <h2>Dein AI-Literacy-Profil</h2>
+      <p id="resultsDate"></p>
+    </div>
+
+    <!-- Overall + Benchmark -->
+    <div class="score-grid">
+      <div class="score-card" style="--card-accent: var(--accent2);">
+        <div class="score-card-label">MAILS Gesamt-Score</div>
+        <div class="score-card-value" id="mailsTotalDisplay">–</div>
+        <div class="score-card-sub">von 10 möglichen Punkten</div>
+        <div id="profileTag"></div>
+      </div>
+      <div class="score-card" style="--card-accent: var(--accent3);">
+        <div class="score-card-label">Adoptionsintensität</div>
+        <div class="score-card-value" id="adoptionDisplay">–</div>
+        <div class="score-card-sub" id="adoptionSub">–</div>
+      </div>
+    </div>
+
+    <!-- Benchmark-Phase-Badge -->
+    <div id="phaseBadge" style="font-family:'DM Mono',monospace;font-size:11px;letter-spacing:0.07em;border:1px solid;border-radius:8px;padding:10px 14px;margin-bottom:16px;line-height:1.5;">…</div>
+
+    <!-- Global Benchmark Comparison -->
+    <div class="adoption-comparison" id="benchmarkBlock">
+      <h4>Globaler Benchmark-Vergleich</h4>
+      <div id="benchmarkRows"></div>
+    </div>
+
+    <!-- MAILS Dimensionen -->
+    <div style="margin-bottom: 8px;">
+      <div class="score-card-label" style="font-size:11px; text-transform:uppercase; letter-spacing:.08em; color:var(--muted); font-family:'DM Mono',monospace; margin-bottom:12px;">AI Literacy Dimensionen</div>
+      <div id="dimensionBlocks"></div>
+    </div>
+
+    <!-- Subgruppen (Peer-Benchmark, ab n=100) -->
+    <div id="subgroupBlock" style="margin-bottom:14px;"></div>
+
+    <!-- Handlungsempfehlungen -->
+    <div class="dimension-block" id="recommendationBlock">
+      <div class="dim-header">
+        <div class="dim-name">💡 Persönliche Handlungsempfehlung</div>
+      </div>
+      <div id="recommendationText" style="font-size:13px; color:#94a3b8; line-height:1.7;"></div>
+    </div>
+
+    <div class="disclaimer">
+      Datenerhebung im Rahmen einer Forschungsstudie an der TU Wien.<br>
+      Alle Angaben werden anonym und ausschließlich für wissenschaftliche Zwecke verwendet.<br>
+      MAILS-Skala: Koch, Carolus, Wienrich & Latoschik (2024). <em>Heliyon, 10(21).</em><br>
+      Benchmark-Referenz: Digital Education Council (2024), HEPI (2025).
+    </div>
+  </div>
+
+  </div><!-- /surveyWrap -->
+
+</div>
+
+
+<script>
+// ══════════════════════════════════════════════════════════════════
+// CONSENT
+// ══════════════════════════════════════════════════════════════════
+const consentState = { c1: false, c2: false, c3: false };
+
+function toggleConsent(id) {
+  consentState[id] = !consentState[id];
+  const box = document.getElementById(id + '-box');
+  box.classList.toggle('checked', consentState[id]);
+  box.textContent = consentState[id] ? '✓' : '';
+  document.getElementById('startBtn').classList.toggle('active', consentState.c1 && consentState.c2);
+}
+
+function startSurvey() {
+  if (!consentState.c1 || !consentState.c2) return;
+  document.getElementById('consentScreen').style.display = 'none';
+  document.getElementById('surveyWrap').style.display = 'block';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  // Server-Aggregat im Hintergrund nachladen (non-blocking)
+  fetchServerAggregate().catch(() => {});
+}
+
+// ══════════════════════════════════════════════════════════════════
+// PERSISTENT STORAGE — aggregierte Stichprobendaten
+//
+// Architektur:
+//   Key "ailegacy_aggregate"  → JSON-Objekt mit laufenden Summen
+//   Key "ailegacy_n"          → Anzahl abgeschlossener Durchgänge
+//
+// Wir speichern KEINE Rohdaten pro Person, sondern nur:
+//   - n (Gesamtanzahl)
+//   - Laufende Summe je MAILS-Dimension  → Mittelwert = sum/n
+//   - Laufende Summe adoption_score      → Mittelwert = sum/n
+//   - Laufende n je Studienbereich       → Subgruppen-n
+//   - Laufende Summe MAILS je Bereich    → Subgruppen-Mittelwert
+//
+// Das ermöglicht inkrementelles Updaten ohne alle Rohdaten
+// zu speichern (datensparsamkeitkonform, DSGVO Art. 5 Abs. 1c).
+// ══════════════════════════════════════════════════════════════════
+
+const STORAGE_KEY_AGG = 'ailegacy_aggregate';
+const STORAGE_KEY_N   = 'ailegacy_n';
+
+// Schwellenwerte für Benchmark-Phasen
+const PHASE_THRESHOLDS = {
+  WARM:       30,   // Phase 1: TU-Mittelwert mit Warnung
+  ACTIVE:     50,   // Phase 2: TU-Mittelwert ohne Warnung
+  SUBGROUPS: 100,   // Phase 3: + Subgruppen nach Studienbereich
+  FULL:      200    // Phase 4: + Geschlecht, Studienabschnitt
+};
+
+const DIMS = ['detect','apply','understand','ethics','selfefficacy','selfcomp','create'];
+const STUDIENBEREICHE = ['arch','civil','mech','cs','math','other'];
+
+function emptyAggregate() {
+  const agg = {
+    n: 0,
+    adoption_sum: 0,
+    mails_total_sum: 0,
+    dims: {}
+  };
+  DIMS.forEach(d => { agg.dims[d] = { sum: 0, n: 0 }; });
+
+  // Subgruppen: je Studienbereich
+  agg.subgroups = {};
+  STUDIENBEREICHE.forEach(sb => {
+    agg.subgroups[sb] = {
+      n: 0,
+      mails_total_sum: 0,
+      dims: {}
+    };
+    DIMS.forEach(d => { agg.subgroups[sb].dims[d] = { sum: 0, n: 0 }; });
+  });
+  return agg;
+}
+
+function loadAggregate() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY_AGG);
+    if (!raw) return emptyAggregate();
+    const parsed = JSON.parse(raw);
+    // Merge mit leerer Struktur um fehlende Keys abzusichern
+    const base = emptyAggregate();
+    return Object.assign(base, parsed);
+  } catch(e) {
+    return emptyAggregate();
+  }
+}
+
+function saveAggregate(agg) {
+  try {
+    localStorage.setItem(STORAGE_KEY_AGG, JSON.stringify(agg));
+  } catch(e) {
+    console.warn('Storage write failed:', e.message);
+  }
+}
+
+function updateAggregate(dimScores, mailsTotal, adoptionScore, studienbereich) {
+  const agg = loadAggregate();
+  agg.n += 1;
+  agg.adoption_sum += adoptionScore;
+  if (mailsTotal !== null) agg.mails_total_sum += mailsTotal;
+
+  // Dimensionen gesamt
+  DIMS.forEach(d => {
+    if (dimScores[d] !== null && dimScores[d] !== undefined) {
+      agg.dims[d].sum += dimScores[d];
+      agg.dims[d].n   += 1;
+    }
+  });
+
+  // Subgruppe Studienbereich
+  if (studienbereich && agg.subgroups[studienbereich]) {
+    const sg = agg.subgroups[studienbereich];
+    sg.n += 1;
+    if (mailsTotal !== null) sg.mails_total_sum += mailsTotal;
+    DIMS.forEach(d => {
+      if (dimScores[d] !== null && dimScores[d] !== undefined) {
+        sg.dims[d].sum += dimScores[d];
+        sg.dims[d].n   += 1;
+      }
+    });
+  }
+
+  saveAggregate(agg);
+  return agg;
+}
+
+// Liefert berechnete Mittelwerte aus dem Aggregat
+function getAggregateStats(agg) {
+  const n = agg.n;
+  const dimMeans = {};
+  DIMS.forEach(d => {
+    dimMeans[d] = agg.dims[d].n > 0 ? agg.dims[d].sum / agg.dims[d].n : null;
+  });
+  const mailsMean  = n > 0 ? agg.mails_total_sum / n : null;
+  const adoptionMean = n > 0 ? agg.adoption_sum / n : null;
+
+  const sgStats = {};
+  STUDIENBEREICHE.forEach(sb => {
+    const sg = agg.subgroups[sb];
+    sgStats[sb] = {
+      n: sg.n,
+      mailsMean: sg.n > 0 ? sg.mails_total_sum / sg.n : null,
+      dimMeans: {}
+    };
+    DIMS.forEach(d => {
+      sgStats[sb].dimMeans[d] = sg.dims[d].n > 0 ? sg.dims[d].sum / sg.dims[d].n : null;
+    });
+  });
+
+  return { n, dimMeans, mailsMean, adoptionMean, sgStats };
+}
+
+// Bestimmt aktuelle Benchmark-Phase
+function getBenchmarkPhase(n) {
+  if (n < PHASE_THRESHOLDS.WARM)       return 0; // Nur Carolus-Referenz
+  if (n < PHASE_THRESHOLDS.ACTIVE)     return 1; // TU-Mittelwert vorläufig
+  if (n < PHASE_THRESHOLDS.SUBGROUPS)  return 2; // TU-Mittelwert aktiv
+  if (n < PHASE_THRESHOLDS.FULL)       return 3; // + Subgruppen
+  return 4;                                        // Vollständig
+}
+
+function getPhaseLabel(phase, n) {
+  const next = [30, 50, 100, 200, null][phase];
+  const labels = [
+    `Carolus et al. 2023 (Referenz) · TU-Benchmark ab n=30 · aktuell n=${n}`,
+    `TU Wien vorläufig (n=${n}, < 50) · Carolus et al. 2023`,
+    `TU Wien (n=${n}) · Carolus et al. 2023`,
+    `TU Wien (n=${n}) · Subgruppen · Carolus et al. 2023`,
+    `TU Wien (n=${n}) · Vollständig`
+  ];
+  return labels[phase];
+}
+
+// ══════════════════════════════════════════════════════════════════
+// SURVEY STATE
+// ══════════════════════════════════════════════════════════════════
+const answers = {};
+const totalSections = 5;
+
+const mailsItems = [
+  { id: 'mails1', q: 'Ich kann erkennen, ob ich es mit einer auf künstlicher Intelligenz basierenden Anwendung zu tun habe.', dim: 'detect' },
+  { id: 'mails2', q: 'Ich kann neue Anwendungen im Bereich „Künstliche Intelligenz" programmieren.', dim: 'create' },
+  { id: 'mails3', q: 'Obwohl es oft neue KI-Anwendungen gibt, gelingt es mir, stets „auf dem neuesten Stand" zu sein.', dim: 'selfefficacy' },
+  { id: 'mails4', q: 'Ich kann damit umgehen, wenn Interaktionen mit KI mich frustrieren oder ängstigen.', dim: 'selfcomp' },
+  { id: 'mails5', q: 'Ich kann die Folgen des Einsatzes von KI für die Gesellschaft abwägen.', dim: 'ethics' },
+  { id: 'mails6', q: 'Ich kann neue KI-Anwendungen entwerfen.', dim: 'create' },
+  { id: 'mails7', q: 'Ich kann künstliche Intelligenz sinnvoll einsetzen, um meine Ziele zu erreichen.', dim: 'apply' },
+  { id: 'mails8', q: 'Auch anstrengende und komplizierte Aufgaben kann ich in der Regel gut mit KI bewältigen.', dim: 'selfefficacy' },
+  { id: 'mails9', q: 'Ich kann verhindern, dass mich eine KI in meinen Entscheidungen beeinflusst.', dim: 'selfcomp' },
+  { id: 'mails10', q: 'Ich kann abschätzen, welche Vor- und Nachteile der Einsatz einer KI mit sich bringt.', dim: 'understand' }
+];
+
+// ══════════════════════════════════════════════════════════════════
+// RENDER MAILS ITEMS
+// ══════════════════════════════════════════════════════════════════
+function renderMailsItems() {
+  const container = document.getElementById('mailsItems');
+  mailsItems.forEach((item, i) => {
+    const num = 16 + i;
+    container.innerHTML += `
+      <div class="card">
+        <div class="q-number">Frage ${num}</div>
+        <div class="q-label">${item.q}</div>
+        <div class="mails-slider-wrap">
+          <div class="mails-slider-labels">
+            <span>0 – Kaum ausgeprägt</span>
+            <span>10 – Sehr stark</span>
+          </div>
+          <div class="mails-scale" id="${item.id}">
+            ${[0,1,2,3,4,5,6,7,8,9,10].map(v=>`<button class="mails-btn" data-val="${v}">${v}</button>`).join('')}
+          </div>
+        </div>
+      </div>`;
+  });
+  mailsItems.forEach(item => {
+    document.getElementById(item.id).querySelectorAll('.mails-btn').forEach(btn => {
+      btn.addEventListener('click', function() {
+        document.getElementById(item.id).querySelectorAll('.mails-btn').forEach(b => b.classList.remove('selected'));
+        this.classList.add('selected');
+        answers[item.id] = parseFloat(this.dataset.val);
+      });
+    });
+  });
+}
+renderMailsItems();
+
+// ══════════════════════════════════════════════════════════════════
+// INTERACTION HANDLERS
+// ══════════════════════════════════════════════════════════════════
+document.querySelectorAll('.radio-group').forEach(group => {
+  group.querySelectorAll('.radio-opt').forEach(opt => {
+    opt.addEventListener('click', function() {
+      group.querySelectorAll('.radio-opt').forEach(o => o.classList.remove('selected'));
+      this.classList.add('selected');
+      answers[group.id] = this.dataset.val;
+    });
+  });
+});
+
+document.querySelectorAll('.check-group').forEach(group => {
+  group.querySelectorAll('.check-opt').forEach(opt => {
+    opt.addEventListener('click', function() {
+      this.classList.toggle('selected');
+      if (!answers[group.id]) answers[group.id] = [];
+      const val = this.dataset.val;
+      if (this.classList.contains('selected')) answers[group.id].push(val);
+      else answers[group.id] = answers[group.id].filter(v => v !== val);
+    });
+  });
+});
+
+document.querySelectorAll('.likert-scale').forEach(scale => {
+  scale.querySelectorAll('.likert-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+      scale.querySelectorAll('.likert-btn').forEach(b => b.classList.remove('selected'));
+      this.classList.add('selected');
+      answers[scale.id] = parseInt(this.dataset.val);
+    });
+  });
+});
+
+// ══════════════════════════════════════════════════════════════════
+// NAVIGATION
+// ══════════════════════════════════════════════════════════════════
+function nextSection(n) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.getElementById('sec' + n).classList.add('active');
+  const pct = Math.round(((n - 1) / totalSections) * 100);
+  document.getElementById('progressBar').style.width = pct + '%';
+  document.getElementById('progressLabel').textContent = (n-1) + ' / ' + totalSections;
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+function prevSection(n) { nextSection(n); }
+
+// ══════════════════════════════════════════════════════════════════
+// SCORING
+// ══════════════════════════════════════════════════════════════════
+const dimItems = {
+  detect:       ['mails1'],
+  create:       ['mails2', 'mails6'],
+  selfefficacy: ['mails3', 'mails8'],
+  selfcomp:     ['mails4', 'mails9'],
+  ethics:       ['mails5'],
+  apply:        ['mails7'],
+  understand:   ['mails10']
+};
+const aiLiteracyDims = ['detect','apply','understand','ethics'];
+
+// Carolus et al. (2023) Referenzwerte — approximiert aus Validierungsstudie n=300
+const carolusRef = {
+  apply:        { mean: 5.8, label: 'KI anwenden',       color: '#4f9cf9' },
+  understand:   { mean: 4.9, label: 'KI verstehen',      color: '#818cf8' },
+  detect:       { mean: 5.2, label: 'KI erkennen',       color: '#a78bfa' },
+  ethics:       { mean: 5.5, label: 'KI-Ethik',          color: '#f59e0b' },
+  create:       { mean: 1.8, label: 'KI entwickeln',     color: '#ec4899' },
+  selfefficacy: { mean: 4.7, label: 'Selbstwirksamkeit', color: '#10b981' },
+  selfcomp:     { mean: 4.3, label: 'Selbstkompetenz',   color: '#06b6d4' }
+};
+
+const studienbereichLabels = {
+  arch:'Architektur', civil:'Bau & Umwelt', mech:'Maschinenbau',
+  cs:'Informatik', math:'Mathematik/Physik', other:'Andere'
+};
+
+function calcDimScore(dim) {
+  const vals = dimItems[dim].map(id => answers[id]).filter(v => v !== undefined);
+  if (!vals.length) return null;
+  return vals.reduce((a,b) => a+b, 0) / vals.length;
+}
+
+function calcMailsTotal() {
+  const scores = aiLiteracyDims.map(d => calcDimScore(d)).filter(v => v !== null);
+  if (!scores.length) return null;
+  return scores.reduce((a,b) => a+b, 0) / scores.length;
+}
+
+function getAdoptionScore() {
+  const freqMap = { never:0, rarely:20, weekly:50, daily:75, vdaily:100 };
+  const freqScore = freqMap[answers['q4']] || 0;
+  const tools = (answers['q5'] || []).filter(v => v !== 'none').length;
+  const uses  = (answers['q6'] || []).length;
+  return Math.round(freqScore * 0.5 + Math.min(tools*14,100) * 0.25 + Math.min(uses*12,100) * 0.25);
+}
+
+function getMailsProfile(score) {
+  if (score === null) return { label:'–', color:'#64748b', emoji:'?' };
+  if (score < 3) return { label:'AI-Einsteiger',  color:'#f59e0b', emoji:'🌱' };
+  if (score < 5) return { label:'AI-Lernender',   color:'#4f9cf9', emoji:'📚' };
+  if (score < 7) return { label:'AI-Praktiker',   color:'#10b981', emoji:'⚙️' };
+  return           { label:'AI-Experte',       color:'#a78bfa', emoji:'🚀' };
+}
+
+function getAdoptionLabel(score) {
+  if (score === 0)   return { label:'Non-Adopter',             color:'#64748b' };
+  if (score < 30)    return { label:'Gelegentlicher Nutzer',   color:'#f59e0b' };
+  if (score < 60)    return { label:'Regelmäßiger Nutzer',     color:'#4f9cf9' };
+  if (score < 80)    return { label:'Fortgeschrittener Nutzer',color:'#10b981' };
+  return               { label:'Power-User',               color:'#a78bfa' };
+}
+
+function getRecommendation(mailsTotal, adoptionScore) {
+  const recs = [];
+  if (mailsTotal === null) {
+    recs.push('Beantworte die MAILS-Items vollständig für eine persönliche Empfehlung.');
+  } else if (mailsTotal < 4) {
+    recs.push('Deine AI Literacy ist noch im Aufbau. Empfehlung: Beginne mit <em>Elements of AI</em> (kostenlos, online) und experimentiere gezielt mit 1–2 Tools.');
+  } else if (mailsTotal < 6.5) {
+    recs.push('Du hast solide Grundkenntnisse. Vertiefe dein Verständnis durch kritisches Hinterfragen von KI-Outputs (Fact-Checking, Halluzinations-Tests) und fortgeschrittenere Prompt-Techniken.');
+  } else {
+    recs.push('Du bist bereits ein kompetenter AI-Anwender. Fokussiere dich auf ethische Dimensionen und systematische Integration in komplexe Arbeitsabläufe.');
+  }
+  const createScore = calcDimScore('create');
+  if (createScore !== null && createScore < 3) {
+    recs.push('Deine Fähigkeit, KI-Anwendungen zu <em>entwickeln</em>, ist gering – für die meisten Studierenden normal. Falls relevant: Python-Basics + HuggingFace wären ein guter Einstieg.');
+  }
+  if (adoptionScore > 60 && (mailsTotal === null || mailsTotal < 5)) {
+    recs.push('<strong>⚠️ Mismatch erkannt:</strong> Du nutzt KI intensiv, aber deine Literacy-Selbsteinschätzung ist vergleichsweise niedrig. Überlege, ob du KI-Outputs ausreichend kritisch bewertest.');
+  }
+  if (adoptionScore < 30 && mailsTotal !== null && mailsTotal > 5) {
+    recs.push('Du hast gutes KI-Wissen, nutzt es aber selten. Experimentiere in Low-Stakes-Situationen (Brainstorming, Zusammenfassungen) um Vertrauen aufzubauen.');
+  }
+  return recs.join('<br><br>');
+}
+
+// ══════════════════════════════════════════════════════════════════
+// BACKEND SUBMISSION (Platzhalter — Endpoint anpassen)
+// ══════════════════════════════════════════════════════════════════
+// ── Nach dem Deploy: beide URLs auf deine Web-App-URL setzen ──
+// Die URL ist identisch für POST (Daten senden) und GET?action=stats
+const BACKEND_URL = 'https://script.google.com/macros/s/AKfycby0hju3E5p8NXYmmytdaiQaHjX6YuoT7svaatQct8_s6kGGRJMKxPp4_T0Yg4akxtjV/exec';
+
+
+// ── Server-seitige Aggregat-Stats laden ───────────────────────────
+// Wird beim Survey-Start aufgerufen. Merged server-Daten mit
+// localStorage-Daten (server hat Vorrang wenn n_server > n_local).
+async function fetchServerAggregate() {
+  try {
+    const res = await fetch(BACKEND_URL + '?action=stats', { method: 'GET' });
+    if (!res.ok) return;
+    const data = await res.json();
+    if (!data.ok || !data.n) return;
+
+    // Nur überschreiben wenn Server mehr Daten hat als localStorage
+    const localAgg = loadAggregate();
+    if (data.n > localAgg.n) {
+      // Server-Format in lokales Format überführen
+      const serverAgg = emptyAggregate();
+      serverAgg.n               = data.n;
+      serverAgg.adoption_sum    = data.adoption_sum    || 0;
+      serverAgg.mails_total_sum = data.mails_total_sum || 0;
+      DIMS.forEach(d => {
+        if (data.dims && data.dims[d]) {
+          serverAgg.dims[d].sum = data.dims[d].sum || 0;
+          serverAgg.dims[d].n   = data.dims[d].n   || 0;
+        }
+      });
+      STUDIENBEREICHE.forEach(sb => {
+        if (data.subgroups && data.subgroups[sb]) {
+          serverAgg.subgroups[sb].n               = data.subgroups[sb].n || 0;
+          serverAgg.subgroups[sb].mails_total_sum = data.subgroups[sb].mails_total_sum || 0;
+          DIMS.forEach(d => {
+            if (data.subgroups[sb].dims && data.subgroups[sb].dims[d]) {
+              serverAgg.subgroups[sb].dims[d].sum = data.subgroups[sb].dims[d].sum || 0;
+              serverAgg.subgroups[sb].dims[d].n   = data.subgroups[sb].dims[d].n   || 0;
+            }
+          });
+        }
+      });
+      saveAggregate(serverAgg);
+      console.log(`Server-Aggregat geladen: n=${data.n}`);
+    }
+  } catch(e) {
+    console.warn('Server-Aggregat nicht erreichbar, verwende localStorage:', e.message);
+  }
+}
+
+async function submitToBackend(payload) {
+  try {
+    const res = await fetch(BACKEND_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    if (!res.ok) console.warn('Backend status:', res.status);
+  } catch(e) {
+    console.warn('Backend nicht erreichbar (kein Fehler für User):', e.message);
+  }
+}
+
+// ══════════════════════════════════════════════════════════════════
+// RESULTS — Haupt-Orchestrierungsfunktion
+// ══════════════════════════════════════════════════════════════════
+function showResults() {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.getElementById('progressBar').style.width = '100%';
+  document.getElementById('progressLabel').textContent = '5 / 5';
+
+  // 1. Scores berechnen
+  const mailsTotal    = calcMailsTotal();
+  const adoptionScore = getAdoptionScore();
+  const profile       = getMailsProfile(mailsTotal);
+  const adoptionLbl   = getAdoptionLabel(adoptionScore);
+  const studienbereich = answers['q1'] || null;
+
+  const dimScores = {};
+  DIMS.forEach(d => { dimScores[d] = calcDimScore(d); });
+
+  // 2. Aggregat aktualisieren (localStorage) BEVOR wir rendern,
+  //    damit der aktuelle Durchgang in den TU-Mittelwert einfließt
+  const updatedAgg = updateAggregate(dimScores, mailsTotal, adoptionScore, studienbereich);
+  const stats      = getAggregateStats(updatedAgg);
+  const phase      = getBenchmarkPhase(stats.n);
+
+  // 3. Backend (fire-and-forget)
+  const payload = {
+    timestamp: new Date().toISOString(),
+    session_id: Math.random().toString(36).slice(2, 10),
+    consent: { c1: consentState.c1, c2: consentState.c2, publication: consentState.c3 },
+    demographics: {
+      alter: answers['q_age'] || null,
+      geschlecht: answers['q_gender'] || null,
+      studienbereich,
+      studienabschnitt: answers['q2'] || null,
+      tech_confidence: answers['q3'] || null
+    },
+    adoption: {
+      frequenz: answers['q4'] || null,
+      tools: answers['q5'] || [],
+      use_cases: answers['q6'] || [],
+      richtlinien: answers['q7'] || null,
+      arbeitsweise: answers['q8'] || null,
+      adoption_score: adoptionScore
+    },
+    einstellungen: { q9: answers['q9']||null, q10: answers['q10']||null,
+                     q11: answers['q11']||null, q12: answers['q12']||null,
+                     q13: answers['q13']||null },
+    mails: { items: mailsItems.map(i => ({ id:i.id, dim:i.dim, value:answers[i.id]??null })),
+             dim_scores: dimScores, total_ai_literacy: mailsTotal },
+    abschluss: { wissensquelle: answers['q24']||[], training_interesse: answers['q25']||null },
+    computed: { profil: profile.label, adoption_label: adoptionLbl.label, benchmark_phase: phase }
+  };
+  submitToBackend(payload);
+
+  // 4. UI rendern
+  document.getElementById('resultsDate').textContent =
+    new Date().toLocaleDateString('de-AT', { day:'numeric', month:'long', year:'numeric' });
+
+  document.getElementById('mailsTotalDisplay').textContent =
+    mailsTotal !== null ? mailsTotal.toFixed(1) : '–';
+  document.getElementById('profileTag').innerHTML =
+    `<span class="profile-tag" style="background:${profile.color}22;border:1px solid ${profile.color}55;color:${profile.color};margin-top:8px;">${profile.emoji} ${profile.label}</span>`;
+
+  document.getElementById('adoptionDisplay').textContent = adoptionScore + '%';
+  document.getElementById('adoptionSub').innerHTML =
+    `<span style="color:${adoptionLbl.color}">${adoptionLbl.label}</span>`;
+
+  // 5. Benchmark-Phase-Badge
+  renderPhaseBadge(phase, stats.n);
+
+  // 6. Globale Vergleichstabelle (DEC/HEPI — immer sichtbar)
+  renderGlobalBenchmark();
+
+  // 7. MAILS-Dimensionen mit dynamischem Benchmark
+  renderDimensions(dimScores, stats, phase, studienbereich);
+
+  // 8. Subgruppen-Block (ab Phase 3)
+  renderSubgroupBlock(stats, phase, studienbereich, mailsTotal);
+
+  // 9. Empfehlung
+  document.getElementById('recommendationText').innerHTML = getRecommendation(mailsTotal, adoptionScore);
+
+  document.getElementById('results').style.display = 'block';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ──────────────────────────────────────────────────────────────────
+// Phase-Badge
+// ──────────────────────────────────────────────────────────────────
+function renderPhaseBadge(phase, n) {
+  const phaseColors = ['#64748b','#f59e0b','#4f9cf9','#10b981','#a78bfa'];
+  const phaseNames  = [
+    '⬜ Kalt — Externe Referenz',
+    '🟡 Warm — TU-Daten vorläufig',
+    '🔵 Aktiv — TU-Mittelwert',
+    '🟢 Subgruppen freigeschaltet',
+    '🟣 Vollständiger Peer-Benchmark'
+  ];
+  const nextThresh = [30,50,100,200,null][phase];
+  const remaining  = nextThresh ? nextThresh - n : 0;
+
+  const el = document.getElementById('phaseBadge');
+  if (!el) return;
+  el.style.background = phaseColors[phase] + '22';
+  el.style.borderColor = phaseColors[phase] + '55';
+  el.style.color = phaseColors[phase];
+  el.innerHTML = `
+    ${phaseNames[phase]} · n=${n}
+    ${nextThresh ? `<span style="color:var(--muted);font-size:10px;display:block;margin-top:2px;">Nächste Stufe in ${remaining} Antworten</span>` : '<span style="color:var(--muted);font-size:10px;display:block;margin-top:2px;">Maximale Auflösung erreicht</span>'}
+  `;
+}
+
+// ──────────────────────────────────────────────────────────────────
+// Globaler DEC/HEPI Benchmark (fix, keine Storage-Abhängigkeit)
+// ──────────────────────────────────────────────────────────────────
+function renderGlobalBenchmark() {
+  const freq = answers['q4'];
+  const freqPct = { never:0, rarely:14, weekly:54, daily:75, vdaily:100 }[freq] || 0;
+  const adoptionScore = getAdoptionScore();
+  const rows = [
+    { label:'Deine Nutzungsfrequenz', you:freqPct, global:54, ref:'Ø Global (DEC 2024)', color:'#4f9cf9' },
+    { label:'AI-Nutzung allgemein',   you:adoptionScore>0?100:0, global:92, ref:'UK-Studierende (HEPI 2025)', color:'#10b981' },
+    { label:'Tägliche AI-Nutzung',    you:(freq==='daily'||freq==='vdaily')?100:0, global:25, ref:'Global täglich (DEC 2024)', color:'#a78bfa' }
+  ];
+  document.getElementById('benchmarkRows').innerHTML = rows.map(r => `
+    <div class="comp-row">
+      <div class="comp-dot" style="background:${r.color}"></div>
+      <div class="comp-name" style="font-size:12px;">${r.label}</div>
+      <div class="comp-bar-bg"><div class="comp-bar-fill" style="width:${r.you}%;background:${r.color}"></div></div>
+      <div class="comp-pct">${r.you}%</div>
+    </div>
+    <div class="comp-row" style="margin-top:-4px;margin-bottom:12px;padding-left:18px;">
+      <div style="width:8px"></div>
+      <div class="comp-name" style="font-size:11px;color:var(--muted);">${r.ref}</div>
+      <div class="comp-bar-bg" style="height:4px;"><div class="comp-bar-fill" style="width:${r.global}%;background:${r.color}55;height:4px;"></div></div>
+      <div class="comp-pct" style="color:var(--muted);">${r.global}%</div>
+    </div>`).join('');
+}
+
+// ──────────────────────────────────────────────────────────────────
+// MAILS-Dimensionen mit phasenabhängigem Benchmark
+// ──────────────────────────────────────────────────────────────────
+function renderDimensions(dimScores, stats, phase, studienbereich) {
+  const dimOrder = ['apply','understand','detect','ethics','selfefficacy','selfcomp','create'];
+  let html = '';
+
+  dimOrder.forEach(dim => {
+    const score = dimScores[dim];
+    const ref   = carolusRef[dim];
+    const scorePct = score !== null ? Math.round((score/10)*100) : 0;
+    const refPct   = Math.round((ref.mean/10)*100);
+
+    // TU-Mittelwert (falls Phase >= 1)
+    const tuMean    = stats.dimMeans[dim];
+    const tuMeanPct = tuMean !== null ? Math.round((tuMean/10)*100) : null;
+
+    // Abweichung von Carolus-Referenz
+    const diffCarolus = score !== null
+      ? (score >= ref.mean
+          ? `+${(score-ref.mean).toFixed(1)} vs. Ref.`
+          : `${(score-ref.mean).toFixed(1)} vs. Ref.`)
+      : '–';
+
+    // Abweichung von TU-Mittelwert (ab Phase 1)
+    const diffTU = (phase >= 1 && score !== null && tuMean !== null)
+      ? (score >= tuMean
+          ? `+${(score-tuMean).toFixed(1)} vs. TU`
+          : `${(score-tuMean).toFixed(1)} vs. TU`)
+      : null;
+
+    html += `
+      <div class="dimension-block">
+        <div class="dim-header">
+          <div class="dim-name">${ref.label}</div>
+          <div class="dim-score" style="color:${ref.color}">${score !== null ? score.toFixed(1) : '–'} / 10</div>
+        </div>
+        <div class="dim-bar-bg"><div class="dim-bar-fill" style="width:${scorePct}%;background:${ref.color}"></div></div>
+
+        <!-- Dein Score -->
+        <div class="benchmark-row" style="margin-top:10px;">
+          <span class="bench-label" style="width:80px;">Du</span>
+          <div class="bench-bar-bg"><div class="bench-bar-fill" style="width:${scorePct}%;background:${ref.color}"></div></div>
+          <span class="bench-val">${score !== null ? score.toFixed(1) : '–'}</span>
+        </div>
+
+        <!-- Carolus 2023 Referenz — immer sichtbar -->
+        <div class="benchmark-row" style="margin-top:4px;">
+          <span class="bench-label" style="width:80px;font-size:9px;">Carolus '23</span>
+          <div class="bench-bar-bg"><div class="bench-bar-fill" style="width:${refPct}%;background:${ref.color}55"></div></div>
+          <span class="bench-val" style="color:var(--muted)">${ref.mean}</span>
+        </div>
+
+        <!-- TU Wien Mittelwert — ab Phase 1 -->
+        ${phase >= 1 && tuMean !== null ? `
+        <div class="benchmark-row" style="margin-top:4px;">
+          <span class="bench-label" style="width:80px;font-size:9px;">TU Wien${phase === 1 ? '*' : ''}</span>
+          <div class="bench-bar-bg"><div class="bench-bar-fill" style="width:${tuMeanPct}%;background:#22d3ee88"></div></div>
+          <span class="bench-val" style="color:#22d3ee">${tuMean.toFixed(1)}</span>
+        </div>` : ''}
+
+        <div class="dim-feedback" style="margin-top:8px;color:${score !== null && score >= ref.mean ? '#10b981' : '#f59e0b'}">
+          ${diffCarolus}${diffTU ? ` &nbsp;·&nbsp; <span style="color:${score >= (tuMean||0)?'#22d3ee':'#f87171'}">${diffTU}</span>` : ''}
+        </div>
+      </div>`;
+  });
+
+  // Phasen-Hinweis unter Dimensionen
+  if (phase === 1) {
+    html += `<div class="info-box" style="margin-top:8px;"><span class="info-box-icon">⚠️</span><span>* TU-Mittelwert vorläufig (n=${stats.n} &lt; 50). Werte stabilisieren sich mit mehr Teilnahmen.</span></div>`;
+  }
+
+  document.getElementById('dimensionBlocks').innerHTML = html;
+}
+
+// ──────────────────────────────────────────────────────────────────
+// Subgruppen-Block (ab Phase 3, n≥100)
+// ──────────────────────────────────────────────────────────────────
+function renderSubgroupBlock(stats, phase, studienbereich, mailsTotal) {
+  const block = document.getElementById('subgroupBlock');
+  if (!block) return;
+
+  if (phase < 3) {
+    const missing = PHASE_THRESHOLDS.SUBGROUPS - stats.n;
+    block.innerHTML = `
+      <div class="dimension-block">
+        <div class="dim-header"><div class="dim-name">👥 Vergleich nach Studienbereich</div></div>
+        <div style="font-size:13px;color:var(--muted);line-height:1.7;">
+          Freigeschaltet ab n=${PHASE_THRESHOLDS.SUBGROUPS} Durchgängen.<br>
+          Aktuell fehlen noch <strong style="color:var(--text)">${missing} Antworten</strong>.<br>
+          Teile den Survey-Link mit Kommilitonen, um diesen Block zu aktivieren!
+        </div>
+      </div>`;
+    return;
+  }
+
+  // Alle Studienbereiche mit genug Daten (n≥10 für Subgruppe)
+  const validGroups = STUDIENBEREICHE.filter(sb => stats.sgStats[sb].n >= 10);
+
+  if (!validGroups.length) {
+    block.innerHTML = `<div class="dimension-block"><div class="dim-feedback">Zu wenige Antworten pro Studienbereich für Subgruppenvergleich (min. n=10 je Gruppe).</div></div>`;
+    return;
+  }
+
+  let html = `<div class="adoption-comparison"><h4>Vergleich nach Studienbereich — MAILS Gesamt</h4>`;
+  validGroups.forEach(sb => {
+    const sg = stats.sgStats[sb];
+    const mean = sg.mailsMean;
+    if (mean === null) return;
+    const pct = Math.round((mean/10)*100);
+    const isYou = sb === studienbereich;
+    const youPct = mailsTotal !== null ? Math.round((mailsTotal/10)*100) : null;
+    html += `
+      <div class="comp-row" style="${isYou ? 'background:rgba(79,156,249,0.06);border-radius:6px;padding:4px 6px;' : ''}">
+        <div class="comp-dot" style="background:${isYou ? '#4f9cf9' : '#334155'}"></div>
+        <div class="comp-name" style="font-size:12px;">${studienbereichLabels[sb] || sb}${isYou ? ' <strong style="color:#4f9cf9">(du)</strong>' : ''} <span style="color:var(--muted);font-size:10px;">n=${sg.n}</span></div>
+        <div class="comp-bar-bg"><div class="comp-bar-fill" style="width:${pct}%;background:${isYou ? '#4f9cf9' : '#334155'}"></div></div>
+        <div class="comp-pct" style="color:${isYou ? '#4f9cf9' : 'var(--muted)'}">${mean.toFixed(1)}</div>
+      </div>`;
+    // Dein persönlicher Balken darunter (nur beim eigenen Bereich)
+    if (isYou && youPct !== null) {
+      html += `
+      <div class="comp-row" style="margin-top:-4px;margin-bottom:8px;padding-left:18px;">
+        <div style="width:8px"></div>
+        <div class="comp-name" style="font-size:11px;color:#4f9cf9;">Dein Score</div>
+        <div class="comp-bar-bg" style="height:4px;"><div class="comp-bar-fill" style="width:${youPct}%;background:#4f9cf955;height:4px;"></div></div>
+        <div class="comp-pct" style="color:#4f9cf9;font-size:10px;">${mailsTotal !== null ? mailsTotal.toFixed(1) : '–'}</div>
+      </div>`;
+    }
+  });
+  html += `</div>`;
+  block.innerHTML = html;
+}
+</script>
+</body>
+</html>
